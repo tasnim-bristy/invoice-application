@@ -1,0 +1,117 @@
+.invoice-card{
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+    max-width: 900px;
+    margin: 0 auto;
+    border: 1px solid #ccc;
+    border-radius: 16px;
+}
+
+ui5-card{
+    height: 900px;
+}
+
+.invoice-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    background-color: #F2F4F8;
+}
+
+.invoice-header ui5-text{
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.invoice-header ui5-button{
+    background-color: #225C9E;
+}
+
+.invo-details{
+    margin: 20px;
+    border-radius: 12px;
+    padding: 10px 15px;
+}
+
+.details-header{
+    background-color: #F2F4F8;
+    border-radius: 12px 12px 0 0;
+}
+
+.details-header ui5-text{
+    font-size: 16px;
+    font-weight: 600;
+    padding: 10px;
+}
+
+
+.invoice-deta{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+}
+
+.invoice-no ui5-label{
+    padding-right: 4px;
+    font-size: 14px;
+    font-weight: 400;
+    color: #1D2D3E;
+}
+
+.invoice-name{
+    padding: 10px 0;
+}
+
+.invoice-name ui5-label{
+    padding-right: 4px;
+    font-size: 14px;
+    font-weight: 400;
+    color: #1D2D3E;
+}
+
+.invoice-ad{
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    padding: 12px 0;
+}
+
+.invoice-address ui5-input{
+    width: 80%;
+}
+
+.invoice-address ui5-label{
+    padding-right: 4px;
+    font-size: 14px;
+    font-weight: 400;
+    color: #1D2D3E;
+}
+
+.invoice-tax ui5-label{
+    padding-right: 4px;
+    font-size: 14px;
+    font-weight: 400;
+    color: #1D2D3E;
+}
+
+
+.invo-item{
+    margin: 18px;
+    border-radius: 12px;
+    padding: 10px 15px;
+}
+
+.items-header{
+    background-color: #F2F4F8;
+    border-radius: 12px 12px 0 0;
+}
+
+.items-header ui5-text{
+    font-size: 16px;
+    font-weight: 600;
+    padding: 10px;
+}
