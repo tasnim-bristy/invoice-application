@@ -7,11 +7,21 @@ import "@ui5/webcomponents/dist/Button.js";
 import "@ui5/webcomponents/dist/Menu.js";
 import "@ui5/webcomponents/dist/Text.js";
 import "@ui5/webcomponents/dist/Input.js";
-import "@ui5/webcomponents/dist/Assets-fetch.js";
+import "@ui5/webcomponents/dist/Calendar.js";
 import "@ui5/webcomponents/dist/DatePicker.js";
 import "@ui5/webcomponents-localization/dist/features/calendar/Gregorian.js";
 import "@ui5/webcomponents/dist/Select.js";
 import "@ui5/webcomponents/dist/Option.js";
+import "@ui5/webcomponents/dist/MenuSeparator.js";
+import "@ui5/webcomponents/dist/Table.js";
+import "@ui5/webcomponents/dist/TableHeaderRow.js";
+import "@ui5/webcomponents/dist/TableHeaderCell.js";
+import "@ui5/webcomponents/dist/Label.js";
+import "@ui5/webcomponents/dist/Icon.js";
+import "@ui5/webcomponents-icons/dist/edit.js";
+import "@ui5/webcomponents-icons/dist/delete.js";
+import "@ui5/webcomponents/dist/Dialog.js";
+
 
 
 bootstrapApplication(App, appConfig)

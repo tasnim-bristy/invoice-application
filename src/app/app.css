@@ -1,17 +1,34 @@
-.invoice-card{
+ui5-dialog {
+  --_ui5_dialog_content_padding: 0;
+  align-content: center;
+}
+
+ui5-dialog::part(content) {
+  padding: 0;
+}
+
+.invoice-card {
+  width: 88vw;
+  max-width: 990px;
+  margin: 0 auto;
+}
+
+
+.header{
+    background: #fff;
+}
+
+.invoice{
     display: grid;
     grid-template-columns: 1fr;
     gap: 8px;
     justify-content: center;
     align-items: center;
-    max-width: 900px;
+    max-width: 600px;
+    height: auto;
     margin: 0 auto;
     border: 1px solid #ccc;
     border-radius: 16px;
-}
-
-ui5-card{
-    height: 900px;
 }
 
 .invoice-header{
@@ -114,4 +131,100 @@ ui5-card{
     font-size: 16px;
     font-weight: 600;
     padding: 10px;
+}
+
+.table{
+    padding: 12px 0;
+}
+
+.table-header{
+    background-color: #F2F4F8;
+}
+
+.table-body ui5-text{
+    font-size: 14px;
+    font-weight: 500;
+    color: #1D2D3E;
+}
+
+.table-body ui5-button{
+    color: #225C9E;
+    height: 30px;
+}
+
+.edit-btn{
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.total{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 12px;
+    justify-content: flex-start;
+    text-align: end;
+}
+
+.sub-total,
+.tax-total,
+.net-total {
+  display: flex;
+  justify-content: space-between;
+  width: 150px;
+}
+
+.sub-total,
+.tax-total{
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 4px;
+}
+
+.sub-total,
+.tax-total ui5-label{
+    font-size: 14px;
+    font-weight: 500;
+    color: #1D2D3E;
+}
+
+.net-total  ui5-label{
+    font-size: 14px;
+    font-weight: 700;
+    color: #1D2D3E;
+}
+
+.invoice-footer{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    background-color: #F2F4F8;
+    border-top: 1px solid #ccc;
+}
+
+.f-right-btn{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.download-btn ui5-button{
+    background-color: #225C9E;
+    color: #fff;
+}
+
+.save-btn ui5-button{
+    background-color: #225C9E;
+    color: #fff;
+}
+
+.invoice-footer-2{
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    align-items: flex-end;
+    padding: 12px;
+    background-color: #F2F4F8;
+    border-top: 1px solid #ccc;
 }
