@@ -1,5 +1,5 @@
 import { CommonModule, NgIf } from '@angular/common';
-import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { ViewChild, ElementRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -14,11 +14,21 @@ import html2canvas from 'html2canvas';
   standalone: true,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class App {
+export class App implements OnInit {
   @ViewChild('invoiceDialog') dialog!: ElementRef;
 
   showInvoiceCard = true;
+  showHistory = false;
   shopObj: Shop = new Shop();
+  invoices: Shop[] = [];
+
+  ngOnInit() {
+    const data = localStorage.getItem('invoiceApplication');
+
+    if (data) {
+      this.invoices = JSON.parse(data);
+    }
+  }
 
   openInvoice() {
     this.dialog.nativeElement.open = true;
@@ -45,6 +55,7 @@ export class App {
       newArr.push(this.shopObj);
       localStorage.setItem('invoiceApplication', JSON.stringify(newArr));
     }
+    this.invoices.push(this.shopObj);
   }
 
   updateField(field: keyof Shop, event: any) {
@@ -56,7 +67,7 @@ export class App {
     let value: any;
 
     if (field === 'products') {
-      value = event.detail.selectedOption?.text || '';
+      value = event.detail.item.text;
     } else {
       value = event.target.value;
     }
@@ -64,10 +75,10 @@ export class App {
     const item = this.shopObj.items[index];
     (item as any)[field] = value;
 
-    // calculate total
     const quantity = Number(item.quantity) || 0;
     const unitPrice = Number(item.unitPrice) || 0;
     const taxPercent = Number(item.tax) || 0;
+
     item.total = quantity * unitPrice * (1 + taxPercent / 100);
   }
 
@@ -118,6 +129,47 @@ export class App {
       pdf.save('invoice.pdf');
     });
   }
+
+  // delete row
+  deleteItem(index: number) {
+    if (confirm('Are you sure you want to delete this item?')) {
+      this.shopObj.items.splice(index, 1);
+
+      const data = localStorage.getItem('invoiceApplication');
+
+      if (data) {
+        const invoices = JSON.parse(data);
+        invoices[invoices.length - 1].items = this.shopObj.items;
+
+        localStorage.setItem('invoiceApplication', JSON.stringify(invoices));
+      }
+    }
+  }
+
+  viewInvoice(index: number) {
+    this.shopObj = this.invoices[index];
+    this.dialog.nativeElement.open = true;
+    this.showInvoiceCard = false;
+  }
+
+  deleteInvoice(index: number) {
+    if (confirm('Delete this invoice?')) {
+      this.invoices.splice(index, 1);
+
+      localStorage.setItem('invoiceApplication', JSON.stringify(this.invoices));
+    }
+  }
+
+  // history
+  openHistory() {
+  this.showInvoiceCard = false;
+  this.showHistory = true;
+}
+
+closeHistory() {
+  this.showHistory = false;
+  this.showInvoiceCard = true;
+}
 }
 
 export class Shop {

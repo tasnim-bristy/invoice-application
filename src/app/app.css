@@ -13,7 +13,6 @@ ui5-dialog::part(content) {
   margin: 0 auto;
 }
 
-
 .header{
     background: #fff;
     display: flex;
@@ -211,14 +210,14 @@ ui5-dialog::part(content) {
     color: #1D2D3E;
 }
 
-.invoice-footer{
+/* .invoice-footer{
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 12px;
     background-color: #F2F4F8;
     border-top: 1px solid #ccc;
-}
+} */
 
 .f-right-btn{
     display: flex;
@@ -227,6 +226,10 @@ ui5-dialog::part(content) {
 }
 
 .download-btn ui5-button{
+    background-color: #225C9E;
+    color: #fff;
+}
+.invoice-history ui5-button{
     background-color: #225C9E;
     color: #fff;
 }
@@ -239,10 +242,21 @@ ui5-dialog::part(content) {
 .invoice-footer-2{
     display: flex;
     gap: 8px;
-    justify-content: flex-end;
-    align-items: flex-end;
-    padding: 10px;
-    height: auto;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
     background-color: #F2F4F8;
     border-top: 1px solid #ccc;
+}
+
+.history-header{
+    display: flex;
+    justify-content: space-between;
+    padding: 8px;
+    align-items: center;
+}
+
+.history-header ui5-text{
+    font-size: 20px;
+    font-weight: 600;
 }

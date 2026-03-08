@@ -5,7 +5,6 @@
       <ui5-text>Invoice Application</ui5-text>
       <ui5-button design="Emphasized" (click)="openInvoice()">New Invoice</ui5-button>
     </div>
-    <ui5-menu-separator></ui5-menu-separator>
   </ui5-card>
 </div>
 
@@ -14,8 +13,8 @@
     <ui5-card>
       <div class="invoice-header">
         <ui5-text>Invoice Application</ui5-text>
-        <div class="download-btn">
-          <ui5-button (click)="downloadInvoice()">Download</ui5-button>
+        <div class="invoice-history">
+          <ui5-button design="Transparent" (click)="openHistory()">Invoice History</ui5-button>
         </div>
       </div>
       <ui5-menu-separator></ui5-menu-separator>
@@ -107,15 +106,13 @@
             <ui5-table-row class="table-body" *ngFor="let item of shopObj.items; let i = index">
               <ui5-table-cell>
                 <ui5-combobox
-                  placeholder="Enter product"
                   [value]="item.products"
                   (selection-change)="updateItemField(i, 'products', $event)"
                 >
                   <ui5-cb-item text="Apple"></ui5-cb-item>
-                  <ui5-cb-item text="Banana"></ui5-cb-item>
-                  <ui5-cb-item text="Orange"></ui5-cb-item>
                   <ui5-cb-item text="Mango"></ui5-cb-item>
-                  <ui5-cb-item text="Watermelon"></ui5-cb-item> </ui5-combobox
+                  <ui5-cb-item text="Banana"></ui5-cb-item>
+                  <ui5-cb-item text="Orange"></ui5-cb-item> </ui5-combobox
               ></ui5-table-cell>
               <ui5-table-cell
                 ><ui5-input
@@ -135,7 +132,7 @@
               <ui5-table-cell
                 ><ui5-select
                   [value]="item.tax"
-                  (input)="updateItemField(i, 'tax', $event)"
+                  (change)="updateItemField(i, 'tax', $event)"
                   style="width: 120px"
                 >
                   <ui5-option value="10">10%</ui5-option>
@@ -153,8 +150,8 @@
               ></ui5-table-cell>
               <ui5-table-cell
                 ><div class="edit-btn">
-                  <ui5-button icon="edit"></ui5-button>
-                  <ui5-button icon="delete"></ui5-button></div
+                  <!-- <ui5-button icon="edit"></ui5-button> -->
+                  <ui5-button icon="delete" (click)="deleteItem(i)"></ui5-button></div
               ></ui5-table-cell>
             </ui5-table-row>
             <ui5-table-row class="table-body">
@@ -169,19 +166,22 @@
         <div class="total">
           <div class="sub-total">
             <ui5-label show-colon>Subtotal</ui5-label>
-            <ui5-text>{{ subtotal }}</ui5-text>
+            <ui5-text>{{ subtotal | currency: 'USD' }}</ui5-text>
           </div>
           <div class="tax-total">
             <ui5-label show-colon>Tax</ui5-label>
-            <ui5-text>{{ taxTotal }}</ui5-text>
+            <ui5-text>{{ taxTotal | currency: 'USD' }}</ui5-text>
           </div>
           <div class="net-total">
             <ui5-label show-colon>Net Total</ui5-label>
-            <ui5-text>{{ netTotal }}</ui5-text>
+            <ui5-text>{{ netTotal | currency: 'USD' }}</ui5-text>
           </div>
         </div>
       </div>
       <div class="invoice-footer-2">
+        <div class="download-btn">
+          <ui5-button (click)="downloadInvoice()">Download</ui5-button>
+        </div>
         <div class="f-right-btn">
           <div class="save-btn">
             <ui5-button (click)="saveInvoice()">Save</ui5-button>
@@ -192,5 +192,37 @@
         </div>
       </div>
     </ui5-card>
+
+    <div class="invoice-history" *ngIf="showHistory">
+      <ui5-card>
+        <div class="history-header">
+          <ui5-text>Invoice History</ui5-text>
+          <ui5-button design="Transparent" (click)="closeHistory()"> Back </ui5-button>
+        </div>
+
+        <ui5-table>
+          <ui5-table-header-row slot="headerRow">
+            <ui5-table-header-cell>Invoice No</ui5-table-header-cell>
+            <ui5-table-header-cell>Customer</ui5-table-header-cell>
+            <ui5-table-header-cell>Date</ui5-table-header-cell>
+            <ui5-table-header-cell>Items</ui5-table-header-cell>
+            <ui5-table-header-cell>Action</ui5-table-header-cell>
+          </ui5-table-header-row>
+
+          <ui5-table-row *ngFor="let inv of invoices; let i = index">
+            <ui5-table-cell>{{ inv.invoiceNo }}</ui5-table-cell>
+            <ui5-table-cell>{{ inv.customerName }}</ui5-table-cell>
+            <ui5-table-cell>{{ inv.invoiceDate }}</ui5-table-cell>
+            <ui5-table-cell>{{ inv.items.length }}</ui5-table-cell>
+
+            <ui5-table-cell>
+              <ui5-button icon="edit" (click)="viewInvoice(i)"></ui5-button>
+
+              <ui5-button icon="delete" design="Negative" (click)="deleteInvoice(i)"></ui5-button>
+            </ui5-table-cell>
+          </ui5-table-row>
+        </ui5-table>
+      </ui5-card>
+    </div>
   </div>
 </ui5-dialog>
