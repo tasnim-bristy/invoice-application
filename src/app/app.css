@@ -136,8 +136,17 @@ ui5-dialog::part(content) {
 }
 
 .items-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     background-color: #F2F4F8;
     border-radius: 12px 12px 0 0;
+}
+
+.items-header ui5-button{
+    height: 30px;
+    margin: 0 12px 0 0;
+    background-color: #F2F4F8;
 }
 
 .items-header ui5-text{
@@ -181,6 +190,7 @@ ui5-dialog::part(content) {
     gap: 12px;
     justify-content: flex-start;
     text-align: end;
+    padding: 12px 0;
 }
 
 .sub-total,

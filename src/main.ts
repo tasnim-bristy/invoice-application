@@ -25,6 +25,5 @@ import "@ui5/webcomponents/dist/ComboBox.js";
 import "@ui5/webcomponents/dist/ComboBoxItem.js";
 
 
-
 bootstrapApplication(App, appConfig)
   .catch((err) => console.error(err));

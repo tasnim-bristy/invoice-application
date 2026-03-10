@@ -1,6 +1,6 @@
 import { CommonModule, NgIf } from '@angular/common';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { RouterLink, RouterOutlet } from '@angular/router';
 import { ViewChild, ElementRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import jsPDF from 'jspdf';
@@ -27,7 +27,15 @@ export class App implements OnInit {
 
     if (data) {
       this.invoices = JSON.parse(data);
+    const lastInvoice = this.invoices[this.invoices.length - 1];
+    this.shopObj.invoiceNo = Number(lastInvoice.invoiceNo) + 1;
+    this.shopObj.customerId = lastInvoice.customerId + 1;
     }
+      else {
+    this.shopObj.invoiceNo = 1;
+    this.shopObj.customerId = 100;
+
+  }
   }
 
   openInvoice() {
@@ -44,19 +52,33 @@ export class App implements OnInit {
     this.shopObj.items.push(new InvoiceItem());
   }
 
-  saveInvoice() {
-    const isLocalPresent = localStorage.getItem('invoiceApplication');
-    if (isLocalPresent != null) {
-      const oldArray = JSON.parse(isLocalPresent);
-      oldArray.push(this.shopObj);
-      localStorage.setItem('invoiceApplication', JSON.stringify(oldArray));
-    } else {
-      const newArr = [];
-      newArr.push(this.shopObj);
-      localStorage.setItem('invoiceApplication', JSON.stringify(newArr));
-    }
-    this.invoices.push(this.shopObj);
+saveInvoice() {
+  if (
+    !this.shopObj.customerName ||
+    !this.shopObj.customerAddress ||
+    !this.shopObj.taxCode ||
+    this.shopObj.items.some(item => !item.products || !item.quantity || !item.unitPrice)
+  ) {
+    alert('Please fill all mandatory fields before saving!');
+    return; 
   }
+
+  const isLocalPresent = localStorage.getItem('invoiceApplication');
+  if (isLocalPresent != null) {
+    const oldArray = JSON.parse(isLocalPresent);
+    oldArray.push(this.shopObj);
+    localStorage.setItem('invoiceApplication', JSON.stringify(oldArray));
+  } else {
+    const newArr = [];
+    newArr.push(this.shopObj);
+    localStorage.setItem('invoiceApplication', JSON.stringify(newArr));
+  }
+  
+    this.invoices.push({...this.shopObj});
+  localStorage.setItem('invoiceApplication', JSON.stringify(this.invoices));
+  this.shopObj = new Shop();
+  this.closeDialog();
+}
 
   updateField(field: keyof Shop, event: any) {
     const value = event.target.value;
@@ -114,7 +136,7 @@ export class App implements OnInit {
 
     html2canvas(data).then((canvas) => {
       const imgWidth = 210;
-      const pageHeight = 295;
+      const pageHeight = 210;
 
       const imgHeight = (canvas.height * imgWidth) / canvas.width;
       const heightLeft = imgHeight;
@@ -146,6 +168,17 @@ export class App implements OnInit {
     }
   }
 
+      // history
+    openHistory() {
+    this.showInvoiceCard = false;
+    this.showHistory = true;
+  }
+  
+  closeHistory() {
+    this.showHistory = false;
+    this.showInvoiceCard = true;
+  }
+
   viewInvoice(index: number) {
     this.shopObj = this.invoices[index];
     this.dialog.nativeElement.open = true;
@@ -159,17 +192,6 @@ export class App implements OnInit {
       localStorage.setItem('invoiceApplication', JSON.stringify(this.invoices));
     }
   }
-
-  // history
-  openHistory() {
-  this.showInvoiceCard = false;
-  this.showHistory = true;
-}
-
-closeHistory() {
-  this.showHistory = false;
-  this.showInvoiceCard = true;
-}
 }
 
 export class Shop {
