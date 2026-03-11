@@ -5,6 +5,7 @@ import { ViewChild, ElementRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-root',
@@ -16,26 +17,31 @@ import html2canvas from 'html2canvas';
 })
 export class App implements OnInit {
   @ViewChild('invoiceDialog') dialog!: ElementRef;
+  constructor(private cdr: ChangeDetectorRef) {}
 
   showInvoiceCard = true;
   showHistory = false;
   shopObj: Shop = new Shop();
   invoices: Shop[] = [];
+  customerNames: string[] = [];
+
+  // Validation trigger
+  showValidation = false;
 
   ngOnInit() {
     const data = localStorage.getItem('invoiceApplication');
 
     if (data) {
       this.invoices = JSON.parse(data);
-    const lastInvoice = this.invoices[this.invoices.length - 1];
-    this.shopObj.invoiceNo = Number(lastInvoice.invoiceNo) + 1;
-    this.shopObj.customerId = lastInvoice.customerId + 1;
+      const lastInvoice = this.invoices[this.invoices.length - 1];
+      const names = this.invoices.map((inv) => inv.customerName);
+      this.customerNames = [...new Set(names)];
+      this.shopObj.invoiceNo = Number(lastInvoice.invoiceNo) + 1;
+      this.shopObj.customerId = lastInvoice.customerId + 1;
+    } else {
+      this.shopObj.invoiceNo = 1;
+      this.shopObj.customerId = 100;
     }
-      else {
-    this.shopObj.invoiceNo = 1;
-    this.shopObj.customerId = 100;
-
-  }
   }
 
   openInvoice() {
@@ -52,37 +58,50 @@ export class App implements OnInit {
     this.shopObj.items.push(new InvoiceItem());
   }
 
-saveInvoice() {
-  if (
-    !this.shopObj.customerName ||
-    !this.shopObj.customerAddress ||
-    !this.shopObj.taxCode ||
-    this.shopObj.items.some(item => !item.products || !item.quantity || !item.unitPrice)
-  ) {
-    alert('Please fill all mandatory fields before saving!');
-    return; 
+  updateCustomerName(event: any) {
+    const value = event.target.value;
+    this.shopObj.customerName = value;
   }
 
-  const isLocalPresent = localStorage.getItem('invoiceApplication');
-  if (isLocalPresent != null) {
-    const oldArray = JSON.parse(isLocalPresent);
-    oldArray.push(this.shopObj);
-    localStorage.setItem('invoiceApplication', JSON.stringify(oldArray));
-  } else {
-    const newArr = [];
-    newArr.push(this.shopObj);
-    localStorage.setItem('invoiceApplication', JSON.stringify(newArr));
-  }
-  
-    this.invoices.push({...this.shopObj});
-  localStorage.setItem('invoiceApplication', JSON.stringify(this.invoices));
-  this.shopObj = new Shop();
-  this.closeDialog();
-}
+  saveInvoice() {
+    this.showValidation = true;
 
+    if (
+      !this.shopObj.customerName ||
+      !this.shopObj.customerAddress ||
+      !this.shopObj.taxCode ||
+      this.shopObj.items.some((item) => !item.products || !item.quantity || !item.unitPrice)
+    ) {
+      return; // stop save
+    }
+
+    // SAVE
+    this.invoices.push({ ...this.shopObj });
+    localStorage.setItem('invoiceApplication', JSON.stringify(this.invoices));
+
+    // reset form
+    const lastInvoice = this.shopObj.invoiceNo;
+    const lastCustomer = this.shopObj.customerId;
+
+    this.shopObj = new Shop();
+    this.shopObj.invoiceNo = lastInvoice + 1;
+    this.shopObj.customerId = lastCustomer + 1;
+
+    this.showValidation = false;
+    this.cdr.detectChanges();
+  }
+
+  isFieldInvalid(field: keyof Shop) {
+    if (!this.showValidation) return false;
+    return !this.shopObj[field];
+  }
   updateField(field: keyof Shop, event: any) {
     const value = event.target.value;
     (this.shopObj as any)[field] = value;
+  }
+
+  updateTaxCode(event: any) {
+    this.shopObj.taxCode = event.detail.selectedOption.value;
   }
 
   updateItemField(index: number, field: keyof InvoiceItem, event: any) {
@@ -147,7 +166,7 @@ saveInvoice() {
 
       let position = 0;
 
-      pdf.addImage(contentDataURL, 'PNG', 0, position, imgWidth, imgHeight);
+      pdf.addImage(contentDataURL, 'HTML', 0, position, imgWidth, imgHeight);
       pdf.save('invoice.pdf');
     });
   }
@@ -168,12 +187,12 @@ saveInvoice() {
     }
   }
 
-      // history
-    openHistory() {
+  // history
+  openHistory() {
     this.showInvoiceCard = false;
     this.showHistory = true;
   }
-  
+
   closeHistory() {
     this.showHistory = false;
     this.showInvoiceCard = true;
@@ -200,7 +219,7 @@ export class Shop {
   customerId: number;
   customerName: string;
   customerAddress: string;
-  taxCode: string;
+  taxCode: string = '';
   items: InvoiceItem[];
 
   constructor() {

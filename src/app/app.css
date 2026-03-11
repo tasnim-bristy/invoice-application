@@ -8,6 +8,7 @@ ui5-dialog::part(content) {
 }
 
 .invoice-card {
+    display: flex;
   width: 88vw;
   max-width: 820px;
   margin: 0 auto;
@@ -264,9 +265,29 @@ ui5-dialog::part(content) {
     justify-content: space-between;
     padding: 8px;
     align-items: center;
+    background-color: #F2F4F8;
 }
 
 .history-header ui5-text{
     font-size: 20px;
     font-weight: 600;
+}
+
+.invoice-layout{
+display:flex;
+gap:20px;
+align-items:flex-start;
+}
+
+.invoice-form{
+flex:1;
+}
+
+.invoice-history-panel{
+flex:1;
+}
+
+.history-btn{
+    display: flex;
+    gap: 6px;
 }
