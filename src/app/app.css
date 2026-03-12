@@ -7,19 +7,13 @@ ui5-dialog::part(content) {
   padding: 0;
 }
 
-.invoice-card {
-    display: flex;
-  width: 88vw;
-  max-width: 820px;
-  margin: 0 auto;
+.history-wrapper {
+  display: flex;
+  justify-content: center; 
+  padding: 6px;
 }
-
-.header{
-    background: #fff;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px;
+.main-table {
+  width: 100%;     
 }
 
 .invoice{
@@ -36,13 +30,15 @@ ui5-dialog::part(content) {
     background-color: #fff;
 }
 
-.header ui5-text{
-    font-size: 20px;
-    font-weight: 600;
+.history-header ui5-button{
+    background: #225C9E;
+    color: #fff;
 }
 
-.header ui5-button{
-    background-color: #225C9E;
+.history-table{
+    display: flex;
+    flex-direction: column;
+text-align: center;
 }
 
 .invoice-header{
@@ -80,13 +76,6 @@ ui5-dialog::part(content) {
 }
 
 
-.invoice-deta{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 0;
-}
-
 .invoice-no ui5-label{
     padding-right: 4px;
     font-size: 14px;
@@ -94,9 +83,6 @@ ui5-dialog::part(content) {
     color: #1D2D3E;
 }
 
-.invoice-name{
-    padding: 10px 0;
-}
 
 .invoice-name ui5-label{
     padding-right: 4px;
@@ -105,21 +91,28 @@ ui5-dialog::part(content) {
     color: #1D2D3E;
 }
 
-.invoice-ad{
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    padding: 12px 0;
-}
-
-.invoice-address ui5-input{
-    width: 80%;
-}
 
 .invoice-address ui5-label{
     padding-right: 4px;
     font-size: 14px;
     font-weight: 400;
     color: #1D2D3E;
+}
+
+.invoice-deta,
+.invoice-ad {
+  display: flex;
+  gap: 20px;
+  padding: 12px 0;
+}
+
+.invoice-no,
+.invoice-name,
+.invoice-address,
+.invoice-tax {
+  display: flex;
+  flex-direction: column;
+  flex: 1;   
 }
 
 .invoice-tax ui5-label{
@@ -221,20 +214,20 @@ ui5-dialog::part(content) {
     color: #1D2D3E;
 }
 
-/* .invoice-footer{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px;
-    background-color: #F2F4F8;
-    border-top: 1px solid #ccc;
-} */
+
+.invoice-footer-2{
+  display: flex;
+  justify-content: flex-end;   
+  padding: 12px;
+  background-color: #F2F4F8;
+  border-top: 1px solid #ccc;
+}
 
 .f-right-btn{
-    display: flex;
-    align-items: center;
-    gap: 8px;
+  display: flex;
+  gap: 8px;
 }
+
 
 .download-btn ui5-button{
     background-color: #225C9E;
@@ -263,7 +256,7 @@ ui5-dialog::part(content) {
 .history-header{
     display: flex;
     justify-content: space-between;
-    padding: 8px;
+    padding: 12px;
     align-items: center;
     background-color: #F2F4F8;
 }

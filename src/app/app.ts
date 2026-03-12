@@ -5,6 +5,7 @@ import { ViewChild, ElementRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import html2pdf from 'html2pdf.js';
 import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
@@ -19,8 +20,8 @@ export class App implements OnInit {
   @ViewChild('invoiceDialog') dialog!: ElementRef;
   constructor(private cdr: ChangeDetectorRef) {}
 
-  showInvoiceCard = true;
-  showHistory = false;
+  showInvoiceCard = false;
+  showHistory = true;
   shopObj: Shop = new Shop();
   invoices: Shop[] = [];
   customerNames: string[] = [];
@@ -71,24 +72,22 @@ export class App implements OnInit {
       !this.shopObj.customerAddress ||
       !this.shopObj.taxCode ||
       this.shopObj.items.some((item) => !item.products || !item.quantity || !item.unitPrice)
-    ) {
-      return; // stop save
-    }
-
-    // SAVE
-    this.invoices.push({ ...this.shopObj });
+    )
+      this.invoices.push({ ...this.shopObj });
     localStorage.setItem('invoiceApplication', JSON.stringify(this.invoices));
 
-    // reset form
+    if (!this.customerNames.includes(this.shopObj.customerName)) {
+      this.customerNames.push(this.shopObj.customerName);
+    }
+
+    // Reset form
     const lastInvoice = this.shopObj.invoiceNo;
     const lastCustomer = this.shopObj.customerId;
-
     this.shopObj = new Shop();
     this.shopObj.invoiceNo = lastInvoice + 1;
     this.shopObj.customerId = lastCustomer + 1;
 
     this.showValidation = false;
-    this.cdr.detectChanges();
   }
 
   isFieldInvalid(field: keyof Shop) {
@@ -149,26 +148,14 @@ export class App implements OnInit {
 
   // download as a pdf
   downloadInvoice() {
-    const data = document.getElementById('invoicePDF');
+    const elementToPrint: any = document.getElementById('invoicePDF');
 
-    if (!data) return;
+    html2canvas(elementToPrint, { scale: 2}).then((canvas) =>{
+      const pdf = new jsPDF();
+      pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, 211, 298);
 
-    html2canvas(data).then((canvas) => {
-      const imgWidth = 210;
-      const pageHeight = 210;
-
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      const heightLeft = imgHeight;
-
-      const contentDataURL = canvas.toDataURL('image/png');
-
-      const pdf = new jsPDF('p', 'mm', 'a4');
-
-      let position = 0;
-
-      pdf.addImage(contentDataURL, 'HTML', 0, position, imgWidth, imgHeight);
       pdf.save('invoice.pdf');
-    });
+    })
   }
 
   // delete row
@@ -207,7 +194,6 @@ export class App implements OnInit {
   deleteInvoice(index: number) {
     if (confirm('Delete this invoice?')) {
       this.invoices.splice(index, 1);
-
       localStorage.setItem('invoiceApplication', JSON.stringify(this.invoices));
     }
   }

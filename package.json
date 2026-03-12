@@ -21,6 +21,7 @@
     "@ui5/webcomponents-fiori": "^2.19.2",
     "@ui5/webcomponents-icons": "^2.19.2",
     "html2canvas": "^1.4.1",
+    "html2pdf.js": "^0.14.0",
     "jspdf": "^4.2.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
