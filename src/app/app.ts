@@ -50,10 +50,21 @@ export class App implements OnInit {
     this.showInvoiceCard = false;
   }
 
-  closeDialog() {
-    this.dialog.nativeElement.open = false;
-    this.showInvoiceCard = true;
-  }
+  resetForm() {
+  const lastInvoice = this.shopObj.invoiceNo;
+  const lastCustomer = this.shopObj.customerId;
+
+  this.shopObj = new Shop();
+  this.shopObj.invoiceNo = lastInvoice;
+  this.shopObj.customerId = lastCustomer;
+
+  this.showValidation = false;
+}
+
+closeDialog() {
+  this.dialog.nativeElement.open = false;
+  this.resetForm();
+}
 
   addItem() {
     this.shopObj.items.push(new InvoiceItem());
@@ -88,6 +99,7 @@ export class App implements OnInit {
     this.shopObj.customerId = lastCustomer + 1;
 
     this.showValidation = false;
+    this.closeDialog();
   }
 
   isFieldInvalid(field: keyof Shop) {
