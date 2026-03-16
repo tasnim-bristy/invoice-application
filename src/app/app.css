@@ -198,7 +198,7 @@ ui5-dialog::part(content) {
     padding-bottom: 4px;
 }
 
-.sub-total,
+.sub-total ui5-label,
 .tax-total ui5-label{
     font-size: 14px;
     font-weight: 500;
@@ -225,10 +225,6 @@ ui5-dialog::part(content) {
   gap: 8px;
 }
 
-.download-btn ui5-button{
-    background-color: #225C9E;
-    color: #fff;
-}
 .invoice-history ui5-button{
     background-color: #225C9E;
     color: #fff;
@@ -318,14 +314,16 @@ flex:1;
 
 .in-name ui5-label,
 .in-address ui5-label,
-.in-tax-code ui5-label{
+.in-tax-code ui5-label,
+.in-date ui5-label{
     font-size: 16px;
     font-weight: 600;
     color: #1D2D3E;
 }
 .in-name ui5-text,
 .in-address ui5-text,
-.in-tax-code ui5-text{
+.in-tax-code ui5-text,
+.in-date ui5-text{
     font-size: 16px;
     font-weight: 400;
     color: #1D2D3E;
@@ -341,18 +339,13 @@ flex:1;
     flex-direction: column;
     align-items: flex-end;
     justify-content: flex-start;
+    gap: 12px;
     text-align: end;
-    padding: 12px 0;
+    padding: 12px 12px 12px 0;
 }
 
-.net-total-pre ui5-label{
-    font-size: 16px;
-    font-weight: 700;
-    color: #1D2D3E;
-}
-
-.net-total-pre ui5-text{
-    font-size: 14px;
-    font-weight: 600;
-    padding-left: 6px;
+.name-date{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }

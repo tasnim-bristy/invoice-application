@@ -21,6 +21,7 @@ import "@ui5/webcomponents/dist/Icon.js";
 import "@ui5/webcomponents-icons/dist/edit.js";
 import "@ui5/webcomponents-icons/dist/nav-back.js";
 import "@ui5/webcomponents-icons/dist/message-information.js";
+import "@ui5/webcomponents-icons/dist/download.js";
 import "@ui5/webcomponents-icons/dist/delete.js";
 import "@ui5/webcomponents/dist/Dialog.js";
 import "@ui5/webcomponents/dist/ComboBox.js";

@@ -167,17 +167,17 @@ export class App implements OnInit {
   }
 
   // download as a pdf
-  downloadInvoice() {
-    const elementToPrint: any = document.getElementById('invoiceView');
-
-    html2canvas(elementToPrint, { scale: 2 }).then((canvas) => {
-      const pdf = new jsPDF('p', 'mm', 'a4');
-      pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, 210, 297);
-      pdf.save('invoice.pdf');
-      (this.previewDialog.nativeElement as any).open = false;
-      this.showHistory = true;
-    });
+  downloadInvoice(){
+    const doc = new jsPDF();
   }
+
+
+
+  // downloadInvoice() {
+  //   const doc = new jsPDF();
+  //   doc.text('Hello World!', 10, 10);
+  //   doc.save('hello');
+  // }
 
   // delete row
   deleteItem(index: number) {
@@ -226,16 +226,33 @@ export class App implements OnInit {
     this.cdr.detectChanges();
   }
 
+  get previewSubtotal(): number {
+    if (!this.savedInvoice) return 0;
+
+    return this.savedInvoice.items.reduce((sum, item) => {
+      const quantity = Number(item.quantity) || 0;
+      const unitPrice = Number(item.unitPrice) || 0;
+
+      return sum + quantity * unitPrice;
+    }, 0);
+  }
+
+  get previewTaxTotal(): number {
+    if (!this.savedInvoice) return 0;
+
+    return this.savedInvoice.items.reduce((sum, item) => {
+      const quantity = Number(item.quantity) || 0;
+      const unitPrice = Number(item.unitPrice) || 0;
+      const tax = Number(item.tax) || 0;
+
+      const itemTax = quantity * unitPrice * (tax / 100);
+      return sum + itemTax;
+    }, 0);
+  }
+
   get previewNetTotal(): number {
-  if (!this.savedInvoice) return 0;
-  return this.savedInvoice.items.reduce((sum, item) => {
-    const quantity = Number(item.quantity) || 0;
-    const unitPrice = Number(item.unitPrice) || 0;
-    const tax = Number(item.tax) || 0;
-    return sum + quantity * unitPrice * (1 + tax / 100);
-  }, 0);
-}
-  
+    return this.previewSubtotal + this.previewTaxTotal;
+  }
 }
 
 export class Shop {

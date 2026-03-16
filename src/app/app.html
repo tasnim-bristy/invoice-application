@@ -37,14 +37,22 @@
     <div class="in-customer">
       <div class="in-no">
         <ui5-text>Invoice #{{ savedInvoice?.invoiceNo }}</ui5-text>
-        <ui5-text>{{ savedInvoice?.invoiceDate | date: 'shortDate' }}</ui5-text>
+        <div class="download-btn">
+          <ui5-button icon="download" (click)="downloadInvoice()"></ui5-button>
+        </div>
       </div>
 
       <ui5-menu-separator></ui5-menu-separator>
 
-      <div class="in-name">
-        <ui5-label show-colon>Customer Name</ui5-label>
-        <ui5-text>{{ savedInvoice?.customerName }}</ui5-text>
+      <div class="name-date">
+        <div class="in-name">
+          <ui5-label show-colon>Customer Name</ui5-label>
+          <ui5-text>{{ savedInvoice?.customerName }}</ui5-text>
+        </div>
+        <div class="in-date">
+          <ui5-label show-colon>Date</ui5-label>
+          <ui5-text>{{ savedInvoice?.invoiceDate | date: 'shortDate' }}</ui5-text>
+        </div>
       </div>
 
       <div class="in-address">
@@ -79,16 +87,23 @@
     </ui5-table>
 
     <div class="total-pre">
-      <div class="net-total-pre">
+      <div class="sub-total">
+        <ui5-label show-colon>Subtotal</ui5-label>
+        <ui5-text>{{ previewSubtotal | currency: 'USD' }}</ui5-text>
+      </div>
+
+      <div class="tax-total">
+        <ui5-label show-colon>Tax</ui5-label>
+        <ui5-text>{{ previewTaxTotal | currency: 'USD' }}</ui5-text>
+      </div>
+
+      <div class="net-total">
         <ui5-label show-colon>Net Total</ui5-label>
         <ui5-text>{{ previewNetTotal | currency: 'USD' }}</ui5-text>
       </div>
     </div>
 
-    <div style="margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px">
-      <div class="download-btn">
-        <ui5-button design="Emphasized" (click)="downloadInvoice()">Download</ui5-button>
-      </div>
+    <div style="display: flex; justify-content: flex-end;">
       <ui5-button design="Transparent" (click)="closePreview()">Close</ui5-button>
     </div>
   </div>
