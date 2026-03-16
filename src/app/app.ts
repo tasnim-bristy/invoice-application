@@ -18,6 +18,7 @@ import { ChangeDetectorRef } from '@angular/core';
 })
 export class App implements OnInit {
   @ViewChild('invoiceDialog') dialog!: ElementRef;
+  @ViewChild('previewDialog') previewDialog!: ElementRef;
   constructor(private cdr: ChangeDetectorRef) {}
 
   showInvoiceCard = false;
@@ -25,6 +26,8 @@ export class App implements OnInit {
   shopObj: Shop = new Shop();
   invoices: Shop[] = [];
   customerNames: string[] = [];
+  savedInvoice: Shop | null = null;
+  editIndex: number | null = null;
 
   // Validation trigger
   showValidation = false;
@@ -51,20 +54,25 @@ export class App implements OnInit {
   }
 
   resetForm() {
-  const lastInvoice = this.shopObj.invoiceNo;
-  const lastCustomer = this.shopObj.customerId;
+    const lastInvoice = this.shopObj.invoiceNo;
+    const lastCustomer = this.shopObj.customerId;
 
-  this.shopObj = new Shop();
-  this.shopObj.invoiceNo = lastInvoice;
-  this.shopObj.customerId = lastCustomer;
+    this.shopObj = new Shop();
+    this.shopObj.invoiceNo = lastInvoice;
+    this.shopObj.customerId = lastCustomer;
 
-  this.showValidation = false;
-}
+    this.showValidation = false;
+  }
 
-closeDialog() {
-  this.dialog.nativeElement.open = false;
-  this.resetForm();
-}
+  closeDialog() {
+    this.dialog.nativeElement.open = false;
+    this.resetForm();
+  }
+
+  closePreview() {
+    (this.previewDialog.nativeElement as any).open = false;
+    this.showHistory = true;
+  }
 
   addItem() {
     this.shopObj.items.push(new InvoiceItem());
@@ -160,14 +168,15 @@ closeDialog() {
 
   // download as a pdf
   downloadInvoice() {
-    const elementToPrint: any = document.getElementById('invoicePDF');
+    const elementToPrint: any = document.getElementById('invoiceView');
 
-    html2canvas(elementToPrint, { scale: 2}).then((canvas) =>{
-      const pdf = new jsPDF();
-      pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, 211, 298);
-
+    html2canvas(elementToPrint, { scale: 2 }).then((canvas) => {
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, 210, 297);
       pdf.save('invoice.pdf');
-    })
+      (this.previewDialog.nativeElement as any).open = false;
+      this.showHistory = true;
+    });
   }
 
   // delete row
@@ -196,7 +205,6 @@ closeDialog() {
     this.showHistory = false;
     this.showInvoiceCard = true;
   }
-
   viewInvoice(index: number) {
     this.shopObj = this.invoices[index];
     this.dialog.nativeElement.open = true;
@@ -209,6 +217,25 @@ closeDialog() {
       localStorage.setItem('invoiceApplication', JSON.stringify(this.invoices));
     }
   }
+
+  // preview
+  openPreviewFromHistory(index: number) {
+    this.savedInvoice = JSON.parse(JSON.stringify(this.invoices[index]));
+    const previewEl = this.previewDialog.nativeElement as any;
+    previewEl.open = true;
+    this.cdr.detectChanges();
+  }
+
+  get previewNetTotal(): number {
+  if (!this.savedInvoice) return 0;
+  return this.savedInvoice.items.reduce((sum, item) => {
+    const quantity = Number(item.quantity) || 0;
+    const unitPrice = Number(item.unitPrice) || 0;
+    const tax = Number(item.tax) || 0;
+    return sum + quantity * unitPrice * (1 + tax / 100);
+  }, 0);
+}
+  
 }
 
 export class Shop {

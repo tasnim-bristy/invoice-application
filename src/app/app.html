@@ -24,11 +24,75 @@
         <ui5-table-cell class="history-btn">
           <ui5-button icon="edit" (click)="viewInvoice(i)"></ui5-button>
           <ui5-button icon="delete" (click)="deleteInvoice(i)"></ui5-button>
+          <ui5-button icon="message-information" (click)="openPreviewFromHistory(i)"></ui5-button>
         </ui5-table-cell>
       </ui5-table-row>
     </ui5-table>
   </ui5-card>
 </div>
+
+<!-- download invoice -->
+<ui5-dialog #previewDialog>
+  <div id="invoiceView" class="invoice-view" style="width: 500px">
+    <div class="in-customer">
+      <div class="in-no">
+        <ui5-text>Invoice #{{ savedInvoice?.invoiceNo }}</ui5-text>
+        <ui5-text>{{ savedInvoice?.invoiceDate | date: 'shortDate' }}</ui5-text>
+      </div>
+
+      <ui5-menu-separator></ui5-menu-separator>
+
+      <div class="in-name">
+        <ui5-label show-colon>Customer Name</ui5-label>
+        <ui5-text>{{ savedInvoice?.customerName }}</ui5-text>
+      </div>
+
+      <div class="in-address">
+        <ui5-label show-colon>Customer Address</ui5-label>
+        <ui5-text>{{ savedInvoice?.customerAddress }}</ui5-text>
+      </div>
+
+      <div class="in-tax-code">
+        <ui5-label show-colon>Tax Code</ui5-label>
+        <ui5-text>{{ savedInvoice?.taxCode }}</ui5-text>
+      </div>
+    </div>
+
+    <ui5-menu-separator></ui5-menu-separator>
+
+    <ui5-table>
+      <ui5-table-header-row slot="headerRow">
+        <ui5-table-header-cell>Product</ui5-table-header-cell>
+        <ui5-table-header-cell>Quantity</ui5-table-header-cell>
+        <ui5-table-header-cell>Unit Price</ui5-table-header-cell>
+        <ui5-table-header-cell>Tax</ui5-table-header-cell>
+        <ui5-table-header-cell>Total</ui5-table-header-cell>
+      </ui5-table-header-row>
+
+      <ui5-table-row *ngFor="let item of savedInvoice?.items">
+        <ui5-table-cell>{{ item.products }}</ui5-table-cell>
+        <ui5-table-cell>{{ item.quantity }}</ui5-table-cell>
+        <ui5-table-cell>{{ item.unitPrice }}</ui5-table-cell>
+        <ui5-table-cell>{{ item.tax }}</ui5-table-cell>
+        <ui5-table-cell>{{ item.total }}</ui5-table-cell>
+      </ui5-table-row>
+    </ui5-table>
+
+    <div class="total-pre">
+      <div class="net-total-pre">
+        <ui5-label show-colon>Net Total</ui5-label>
+        <ui5-text>{{ previewNetTotal | currency: 'USD' }}</ui5-text>
+      </div>
+    </div>
+
+    <div style="margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px">
+      <div class="download-btn">
+        <ui5-button design="Emphasized" (click)="downloadInvoice()">Download</ui5-button>
+      </div>
+      <ui5-button design="Transparent" (click)="closePreview()">Close</ui5-button>
+    </div>
+  </div>
+</ui5-dialog>
 
 <!-- ================== INVOICE DIALOG ================== -->
 <ui5-dialog id="invoiceDialog" #invoiceDialog>

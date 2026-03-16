@@ -12,6 +12,7 @@ ui5-dialog::part(content) {
   justify-content: center; 
   padding: 6px;
 }
+
 .main-table {
   width: 100%;     
 }
@@ -291,4 +292,67 @@ flex:1;
   top: 0;
   background: white;
   z-index: 1;
+}
+
+/* preview */
+.invoice-view{
+    padding: 12px;
+}
+
+.in-customer{
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.in-no{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.in-no ui5-text{
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.in-name ui5-label,
+.in-address ui5-label,
+.in-tax-code ui5-label{
+    font-size: 16px;
+    font-weight: 600;
+    color: #1D2D3E;
+}
+.in-name ui5-text,
+.in-address ui5-text,
+.in-tax-code ui5-text{
+    font-size: 16px;
+    font-weight: 400;
+    color: #1D2D3E;
+    padding-left: 6px;
+}
+
+.in-tax-code{
+    padding-bottom: 12px;
+}
+
+.total-pre{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: flex-start;
+    text-align: end;
+    padding: 12px 0;
+}
+
+.net-total-pre ui5-label{
+    font-size: 16px;
+    font-weight: 700;
+    color: #1D2D3E;
+}
+
+.net-total-pre ui5-text{
+    font-size: 14px;
+    font-weight: 600;
+    padding-left: 6px;
 }
