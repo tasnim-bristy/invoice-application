@@ -53,16 +53,23 @@ export class App implements OnInit {
     this.showInvoiceCard = false;
   }
 
-  resetForm() {
-    const lastInvoice = this.shopObj.invoiceNo;
-    const lastCustomer = this.shopObj.customerId;
+ resetForm() {
+  const lastInvoice =
+    this.invoices.length > 0
+      ? this.invoices[this.invoices.length - 1].invoiceNo
+      : 0;
 
-    this.shopObj = new Shop();
-    this.shopObj.invoiceNo = lastInvoice;
-    this.shopObj.customerId = lastCustomer;
+  const lastCustomer =
+    this.invoices.length > 0
+      ? this.invoices[this.invoices.length - 1].customerId
+      : 100;
 
-    this.showValidation = false;
-  }
+  this.shopObj = new Shop();
+  this.shopObj.invoiceNo = lastInvoice + 1;
+  this.shopObj.customerId = lastCustomer + 1;
+
+  this.showValidation = false;
+}
 
   closeDialog() {
     this.dialog.nativeElement.open = false;
@@ -78,10 +85,26 @@ export class App implements OnInit {
     this.shopObj.items.push(new InvoiceItem());
   }
 
-  updateCustomerName(event: any) {
-    const value = event.target.value;
-    this.shopObj.customerName = value;
+updateCustomerName(event: any) {
+  const combobox = event.target as any; 
+  const selectedItem = event.detail?.selectedItem;
+  if (selectedItem) {
+    this.shopObj.customerName = selectedItem.text;
+  } else {
+    this.shopObj.customerName = combobox.value;
   }
+}
+
+onCustomerInput(event: any) {
+  this.shopObj.customerName = event.detail.value;
+}
+
+onCustomerSelect(event: any) {
+  const selectedItem = event.detail.selectedItem;
+  if (selectedItem) {
+    this.shopObj.customerName = selectedItem.text;
+  }
+}
 
   saveInvoice() {
     this.showValidation = true;
@@ -167,11 +190,115 @@ export class App implements OnInit {
   }
 
   // download as a pdf
-  downloadInvoice(){
-    const doc = new jsPDF();
+  isBusy = false;
+
+async downloadInvoice() {
+  if (!this.savedInvoice) return;
+
+  this.isBusy = true;
+  this.cdr.detectChanges(); 
+
+  await new Promise((resolve) => setTimeout(resolve, 50));
+
+  try {
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const margin = 10;
+    let y = 10;
+
+    // --- Header ---
+    pdf.setFontSize(16);
+    pdf.text(`Invoice #${this.savedInvoice.invoiceNo || 0}`, margin, y);
+    y += 10;
+
+    pdf.setFontSize(12);
+    pdf.text(
+      `Date: ${
+        this.savedInvoice.invoiceDate
+          ? new Date(this.savedInvoice.invoiceDate).toLocaleDateString()
+          : ''
+      }`,
+      margin,
+      y
+    );
+    y += 10;
+
+    pdf.text(`Customer Name: ${this.savedInvoice.customerName || ''}`, margin, y);
+    y += 10;
+
+    pdf.text(`Customer Address: ${this.savedInvoice.customerAddress || ''}`, margin, y);
+    y += 10;
+
+    pdf.text(`Tax Code: ${this.savedInvoice.taxCode || ''}`, margin, y);
+    y += 10;
+
+    pdf.setLineWidth(0.5);
+    pdf.line(margin, y, pageWidth - margin, y);
+    y += 5;
+
+    // --- Table Header ---
+    pdf.setFont('helvetica', 'bold');
+    const headers = ['Product', 'Qty', 'Unit Price', 'Tax', 'Total'];
+    const colWidths = [70, 20, 30, 20, 30];
+    let x = margin;
+    headers.forEach((h, i) => {
+      pdf.text(h, x, y);
+      x += colWidths[i];
+    });
+    y += 7;
+    pdf.setFont('helvetica', 'normal');
+
+    pdf.setLineWidth(0.2);
+    pdf.line(margin, y - 5, pageWidth - margin, y - 5);
+
+    // --- Table Rows ---
+    this.savedInvoice.items.forEach((item) => {
+      if (
+        !item.products &&
+        !item.quantity &&
+        !item.unitPrice &&
+        !item.tax &&
+        !item.total
+      ) return;
+
+      x = margin;
+      const values = [
+        item.products || '',
+        Number(item.quantity || 0).toString(),
+        Number(item.unitPrice || 0).toFixed(2),
+        Number(item.tax || 0).toFixed(2),
+        Number(item.total || 0).toFixed(2),
+      ];
+
+      values.forEach((v, i) => {
+        pdf.text(v, x, y);
+        x += colWidths[i];
+      });
+      y += 7;
+    });
+
+    y += 5;
+    pdf.line(margin, y, pageWidth - margin, y);
+    y += 5;
+
+    // --- Totals ---
+    pdf.setFont('helvetica');
+    pdf.text(`Subtotal: ${(this.previewSubtotal || 0).toFixed(2)}`, margin, y);
+    y += 7;
+    pdf.text(`Tax: ${(this.previewTaxTotal || 0).toFixed(2)}`, margin, y);
+    y += 7;
+    pdf.text(`Net Total: ${(this.previewNetTotal || 0).toFixed(2)}`, margin, y);
+
+    // --- Save PDF ---
+    pdf.save(`Invoice-${this.savedInvoice.invoiceNo || 0}.pdf`);
+  } catch (err) {
+    console.error('PDF generation failed', err);
+  } finally {
+    this.isBusy = false;
+    this.cdr.detectChanges();
+    this.closePreview();
   }
-
-
+}
 
   // downloadInvoice() {
   //   const doc = new jsPDF();
@@ -205,11 +332,12 @@ export class App implements OnInit {
     this.showHistory = false;
     this.showInvoiceCard = true;
   }
-  viewInvoice(index: number) {
-    this.shopObj = this.invoices[index];
-    this.dialog.nativeElement.open = true;
-    this.showInvoiceCard = false;
-  }
+
+viewInvoice(index: number) {
+  this.shopObj = JSON.parse(JSON.stringify(this.invoices[index])); 
+  this.dialog.nativeElement.open = true;
+  this.showInvoiceCard = false;
+}
 
   deleteInvoice(index: number) {
     if (confirm('Delete this invoice?')) {

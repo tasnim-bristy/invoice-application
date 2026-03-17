@@ -26,6 +26,7 @@ import "@ui5/webcomponents-icons/dist/delete.js";
 import "@ui5/webcomponents/dist/Dialog.js";
 import "@ui5/webcomponents/dist/ComboBox.js";
 import "@ui5/webcomponents/dist/ComboBoxItem.js";
+import "@ui5/webcomponents/dist/BusyIndicator.js";
 
 
 bootstrapApplication(App, appConfig)

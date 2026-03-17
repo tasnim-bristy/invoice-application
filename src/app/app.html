@@ -34,10 +34,29 @@
 <!-- download invoice -->
 <ui5-dialog #previewDialog>
   <div id="invoiceView" class="invoice-view" style="width: 500px">
+    <div
+      *ngIf="isBusy"
+      class="busy-overlay"
+      style="
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.6);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+      "
+    >
+      <ui5-busy-indicator active="true" style="width: 3rem; height: 3rem"></ui5-busy-indicator>
+    </div>
+
     <div class="in-customer">
       <div class="in-no">
         <ui5-text>Invoice #{{ savedInvoice?.invoiceNo }}</ui5-text>
-        <div class="download-btn">
+        <div class="download-btn no-print">
           <ui5-button icon="download" (click)="downloadInvoice()"></ui5-button>
         </div>
       </div>
@@ -89,21 +108,21 @@
     <div class="total-pre">
       <div class="sub-total">
         <ui5-label show-colon>Subtotal</ui5-label>
-        <ui5-text>{{ previewSubtotal | currency: 'USD' }}</ui5-text>
+        <ui5-text>{{ previewSubtotal | currency: 'BDT' }}</ui5-text>
       </div>
 
       <div class="tax-total">
         <ui5-label show-colon>Tax</ui5-label>
-        <ui5-text>{{ previewTaxTotal | currency: 'USD' }}</ui5-text>
+        <ui5-text>{{ previewTaxTotal | currency: 'BDT' }}</ui5-text>
       </div>
 
       <div class="net-total">
         <ui5-label show-colon>Net Total</ui5-label>
-        <ui5-text>{{ previewNetTotal | currency: 'USD' }}</ui5-text>
+        <ui5-text>{{ previewNetTotal | currency: 'BDT' }}</ui5-text>
       </div>
     </div>
 
-    <div style="display: flex; justify-content: flex-end;">
+    <div style="display: flex; justify-content: flex-end">
       <ui5-button design="Transparent" (click)="closePreview()">Close</ui5-button>
     </div>
   </div>
@@ -160,11 +179,10 @@
               <ui5-combobox
                 style="width: 160px"
                 [value]="shopObj.customerName"
-                (input)="updateCustomerName($event)"
-                [value-state]="showValidation && !shopObj.customerName ? 'Negative' : 'None'"
+                (selection-change)="updateCustomerName($event)"
                 placeholder="Write down a customer name"
               >
-                <ui5-cb-item *ngFor="let name of customerNames" [text]="name"> </ui5-cb-item>
+                <ui5-cb-item *ngFor="let name of customerNames" [text]="name"></ui5-cb-item>
               </ui5-combobox>
             </div>
 
@@ -272,17 +290,17 @@
         <div class="total">
           <div class="sub-total">
             <ui5-label show-colon>Subtotal</ui5-label>
-            <ui5-text>{{ subtotal | currency: 'USD' }}</ui5-text>
+            <ui5-text>{{ subtotal | currency: 'BDT' }}</ui5-text>
           </div>
 
           <div class="tax-total">
             <ui5-label show-colon>Tax</ui5-label>
-            <ui5-text>{{ taxTotal | currency: 'USD' }}</ui5-text>
+            <ui5-text>{{ taxTotal | currency: 'BDT' }}</ui5-text>
           </div>
 
           <div class="net-total">
             <ui5-label show-colon>Net Total</ui5-label>
-            <ui5-text>{{ netTotal | currency: 'USD' }}</ui5-text>
+            <ui5-text>{{ netTotal | currency: 'BDT' }}</ui5-text>
           </div>
         </div>
       </div>
