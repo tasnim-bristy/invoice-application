@@ -37,18 +37,6 @@
     <div
       *ngIf="isBusy"
       class="busy-overlay"
-      style="
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(255, 255, 255, 0.6);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 9999;
-      "
     >
       <ui5-busy-indicator active="true" style="width: 3rem; height: 3rem"></ui5-busy-indicator>
     </div>
@@ -134,9 +122,6 @@
     <ui5-card>
       <div class="invoice-header">
         <ui5-text>Invoice</ui5-text>
-        <!-- <div class="download-btn">
-          <ui5-button (click)="downloadInvoice()">Download</ui5-button>
-        </div> -->
       </div>
 
       <ui5-menu-separator></ui5-menu-separator>
